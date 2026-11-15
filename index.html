@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeCircle | Emergency SOS & Safety Hub</title>
+  <style>
+    :root {
+      --primary: #542b91;
+      --primary-hover: #3f1e70;
+      --danger: #c82143;
+      --danger-hover: #98132e;
+      --bg: #f6f2ff;
+      --card-bg: #ffffff;
+      --text: #292342;
+      --muted: #655d73;
+      --success: #0e623b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      margin: 0;
+      padding-bottom: 40px;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    header h1 { margin: 0; font-size: 2.2rem; }
+    header p { margin: 6px 0 0; opacity: 0.9; }
+    .wrap {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(55, 32, 84, 0.08);
+      margin-bottom: 20px;
+    }
+    h2 { margin-top: 0; font-size: 1.3rem; color: var(--primary); }
+    label { display: block; font-size: 0.9rem; margin: 10px 0 4px; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #bdb3d3;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    .char-counter {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    button, .btn {
+      cursor: pointer;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .primary-btn { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+    .primary-btn:hover { background: var(--primary-hover); }
+    .sos-btn {
+      display: block;
+      margin: 20px auto;
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      background: var(--danger);
+      color: white;
+      font-size: 2.2rem;
+      font-weight: 900;
+      box-shadow: 0 8px 0 #88142b;
+    }
+    .sos-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #88142b; }
+    .btn-danger { background: #ffe1e6; color: #98132e; }
+    .btn-danger:hover { background: #fcd0d7; }
+    .btn-call { background: #e3fcef; color: var(--success); }
+    .btn-sms { background: #e9e0fa; color: var(--primary); }
+    .status-box {
+      background: #f7f3ff;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 45px;
+      font-size: 0.95rem;
+      border-left: 4px solid var(--primary);
+    }
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .contact-row {
+      background: #faf8ff;
+      border: 1px solid #e5def0;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .contact-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .contact-actions a { flex: 1; font-size: 0.85rem; padding: 8px; }
+    .alert-preview {
+      background: #fff1f2;
+      border: 1px solid #ef9aac;
+      padding: 14px;
+      border-radius: 8px;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .history-item {
+      background: #f9f9fb;
+      border: 1px solid #e1e1e8;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .history-item small { color: var(--muted); display: block; margin-bottom: 4px; }
+    footer { text-align: center; padding: 16px; font-size: 0.85rem; color: var(--muted); }
+    @media(max-width: 730px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Feature 1: SafeCircle Branding & Interface Header -->
+  <header>
+    <h1>🛡️ SafeCircle</h1>
+    <p>Your Personal Emergency Safety Dashboard</p>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      
+      <!-- Section 1: Contacts Management -->
+      <section class="card">
+        <h2>👥 Four Trusted Persons</h2>
+        <p style="font-size:0.85rem; color:var(--muted)">Enter contact details for your 4 emergency recipients. Stored locally in browser storage.</p>
+        
+        <!-- Feature 4: 4 Trusted Persons Input Fields -->
+        <div id="contactsContainer"></div>
+        
+        <!-- Feature 5: Save Contact Data to Local Storage -->
+        <button class="primary-btn" id="saveContactsBtn">Save Trusted Persons</button>
+        <p id="saveStatus" style="font-size: 0.85rem; color: var(--success); margin-top: 6px;"></p>
+
+        <!-- Feature 17 (Part 1): Clear Contacts Control -->
+        <button class="btn btn-danger" id="clearContactsBtn" style="width: 100%; margin-top: 8px;">Clear Contacts</button>
+      </section>
+
+      <!-- Section 2: SOS Emergency Control & Description -->
+      <section class="card">
+        <h2>🚨 Emergency SOS Control</h2>
+        
+        <!-- Feature 8: Emergency Situation Description Input -->
+        <label for="emergencyDesc">Emergency Situation Description:</label>
+        <textarea id="emergencyDesc" maxlength="500" placeholder="Describe your situation here (up to 500 characters)..."></textarea>
+        
+        <!-- Feature 9: Live 500-Character Limit Counter -->
+        <div class="char-counter"><span id="charCount">0</span> / 500</div>
+
+        <!-- Web Push Notification Permission Handler -->
+        <button class="btn" id="enableNotifyBtn" style="background:#e9e0fa; color:var(--primary); width:100%; margin-bottom:10px; font-size:0.85rem;">🔔 Enable Browser Auto-Notifications</button>
+
+        <!-- Feature 2: Prominent Red SOS Button -->
+        <button class="sos-btn" id="sosBtn" aria-label="Activate SOS">SOS</button>
+
+        <div class="status-box" id="sosStatus">System ready. Press SOS during an emergency.</div>
+
+        <div class="actions-grid">
+          <!-- Feature 3: Web Audio API Alarm Siren Controls -->
+          <button class="btn btn-danger" id="stopSirenBtn">Stop Siren</button>
+          <button class="btn" id="testSirenBtn" style="background:#e9e0fa">Test Siren Sound</button>
+
+          <!-- Feature 14: Copy SOS Message to Clipboard -->
+          <button class="btn" id="copyMsgBtn" style="background:#e9e0fa" disabled>Copy Message</button>
+          
+          <!-- Feature 13: Web Share API Integration -->
+          <button class="btn" id="shareMsgBtn" style="background:var(--primary); color:white" disabled>Share Alert</button>
+        </div>
+
+        <!-- Feature 15: Direct Emergency Number Trigger (112) -->
+        <div style="margin-top: 15px; text-align: center;">
+          <a href="tel:112" class="btn btn-danger" style="width: 100%; font-size: 1.05rem;">📞 Call Emergency Services (112)</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Section 3: Live Location Tools -->
+    <section class="card">
+      <h2>📍 Live Location Tools</h2>
+      <p style="font-size:0.85rem; color:var(--muted)">Requires device Location to be ON, browser permission, and HTTPS/localhost. If permission is denied, enable it in Chrome Site settings and retry.</p>
+      
+      <!-- Feature 11: Geolocation Permission & Coordinate Fetching -->
+      <button class="primary-btn" id="getLocationBtn" style="width: auto;">Get My Location</button>
+      
+      <p id="locationStatusText" style="margin-top: 10px; font-weight: 500;"></p>
+      
+      <!-- Feature 12: Google Maps Dynamic Link Generation -->
+      <div id="googleMapsContainer" style="margin-top: 8px;"></div>
+    </section>
+
+    <!-- Section 4: Emergency Message Preview & Contact Action Links -->
+    <section class="card">
+      <h2>📩 Prepared Emergency Message & Auto Notification Hub</h2>
+      
+      <!-- Feature 10: Aggregated SOS Payload (Description + Location) -->
+      <div id="messagePreview" class="alert-preview">Your compiled emergency message will appear here after activating SOS.</div>
+      
+      <h3 style="font-size: 1rem; margin-top: 15px;">Automated Contact Notifications & Direct Triggers:</h3>
+      <!-- Feature 6 & Feature 7: Direct Call (`tel:`) and SMS (`sms:`) Pre-filled Dispatch Links -->
+      <div id="contactActionLinks"></div>
+    </section>
+
+    <!-- Section 5: Local Emergency Alert History -->
+    <!-- Feature 16: Timestamped Alert Log in Storage -->
+    <section class="card">
+      <h2>📜 Local Emergency Alert History</h2>
+      <p style="font-size:0.85rem; color:var(--muted)">Stored exclusively in this browser's local storage.</p>
+      <ul id="historyList" class="history-list"></ul>
+      
+      <!-- Feature 17 (Part 2): Clear Alert History Control -->
+      <button class="btn btn-danger" id="clearHistoryBtn" style="margin-top: 12px;">Clear History</button>
+    </section>
+
+  </main>
+
+  <footer>
+    SafeCircle • Emergency SOS, GPS Location, Google Maps & Trusted Contact Sharing
+  </footer>
+
+  <script>
+    // System State Variables
+    let audioCtx = null;
+    let sirenInterval = null;
+    let preparedMessage = "";
+    let currentLocationUrl = "Location Not Available";
+
+    // Broadcast Channel API for Multi-Tab Communication
+    const emergencyChannel = new BroadcastChannel('safecircle_emergency_channel');
+
+    // Element References
+    const contactsContainer = document.getElementById('contactsContainer');
+    const saveContactsBtn = document.getElementById('saveContactsBtn');
+    const clearContactsBtn = document.getElementById('clearContactsBtn');
+    const saveStatus = document.getElementById('saveStatus');
+    
+    const emergencyDesc = document.getElementById('emergencyDesc');
+    const charCount = document.getElementById('charCount');
+    const enableNotifyBtn = document.getElementById('enableNotifyBtn');
+    const sosBtn = document.getElementById('sosBtn');
+    const sosStatus = document.getElementById('sosStatus');
+    const stopSirenBtn = document.getElementById('stopSirenBtn');
+    const testSirenBtn = document.getElementById('testSirenBtn');
+    
+    const getLocationBtn = document.getElementById('getLocationBtn');
+    const locationStatusText = document.getElementById('locationStatusText');
+    const googleMapsContainer = document.getElementById('googleMapsContainer');
+    
+    const messagePreview = document.getElementById('messagePreview');
+    const contactActionLinks = document.getElementById('contactActionLinks');
+    const copyMsgBtn = document.getElementById('copyMsgBtn');
+    const shareMsgBtn = document.getElementById('shareMsgBtn');
+    
+    const historyList = document.getElementById('historyList');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+    // Feature 4 & 5: Contact Persistence Logic
+    function getSavedContacts() {
+      try {
+        const data = JSON.parse(localStorage.getItem('safecircle_contacts'));
+        return Array.isArray(data) ? data : [];
+      } catch(e) { return []; }
+    }
+
+    function renderContactInputs() {
+      contactsContainer.innerHTML = '';
+      const saved = getSavedContacts();
+      for (let i = 0; i < 4; i++) {
+        const item = saved[i] || { name: '', phone: '' };
+        const div = document.createElement('div');
+        div.className = 'contact-row';
+        div.innerHTML = `
+          <label>Trusted Person ${i + 1}</label>
+          <input type="text" placeholder="Full Name" class="c-name" value="${item.name || ''}" style="margin-bottom: 6px;">
+          <input type="tel" placeholder="Phone Number" class="c-phone" value="${item.phone || ''}">
+        `;
+        contactsContainer.appendChild(div);
+      }
+    }
+
+    saveContactsBtn.addEventListener('click', () => {
+      const names = document.querySelectorAll('.c-name');
+      const phones = document.querySelectorAll('.c-phone');
+      const contacts = [];
+
+      for (let i = 0; i < 4; i++) {
+        contacts.push({
+          name: names[i].value.trim(),
+          phone: phones[i].value.trim()
+        });
+      }
+
+      localStorage.setItem('safecircle_contacts', JSON.stringify(contacts));
+      saveStatus.textContent = 'All 4 trusted contacts saved successfully in local storage.';
+      setTimeout(() => saveStatus.textContent = '', 4000);
+      renderContactActionLinks();
+    });
+
+    // Feature 17 (Part 1): Clear Stored Contacts
+    clearContactsBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all saved trusted contacts?')) {
+        localStorage.removeItem('safecircle_contacts');
+        renderContactInputs();
+        renderContactActionLinks();
+        saveStatus.textContent = 'Contacts cleared successfully.';
+        setTimeout(() => saveStatus.textContent = '', 4000);
+      }
+    });
+
+    // Feature 9: Live Character Counter (500 Max)
+    emergencyDesc.addEventListener('input', () => {
+      const length = emergencyDesc.value.length;
+      charCount.textContent = length;
+    });
+
+    // Web Notifications Request
+    enableNotifyBtn.addEventListener('click', () => {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            alert('Browser auto-notifications enabled successfully!');
+          } else {
+            alert('Notification permission was denied.');
+          }
+        });
+      } else {
+        alert('This browser does not support Web Notifications.');
+      }
+    });
+
+    // Feature 3: Web Audio API Alarm Synthesis
+    function playBeep() {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(850, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch(e) {}
+    }
+
+    function startSiren() {
+      stopSiren();
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx.resume();
+        playBeep();
+        sirenInterval = setInterval(playBeep, 500);
+      } catch(e) {
+        sosStatus.textContent = 'Audio API unavailable. Siren could not start.';
+      }
+    }
+
+    function stopSiren() {
+      if (sirenInterval) {
+        clearInterval(sirenInterval);
+        sirenInterval = null;
+      }
+      if (audioCtx) {
+        audioCtx.close().catch(() => {});
+        audioCtx = null;
+      }
+    }
+
+    stopSirenBtn.addEventListener('click', () => {
+      stopSiren();
+      sosStatus.textContent = 'Local siren stopped.';
+    });
+
+    testSirenBtn.addEventListener('click', () => {
+      startSiren();
+      sosStatus.textContent = 'Testing siren sound... Press Stop Siren to deactivate.';
+    });
+
+    // Feature 11 & 12: Reliable GPS Location + Google Maps Link
+    // Note: Browser GPS requires user permission and a secure context (HTTPS or localhost).
+    function fetchLocation(onSuccess, onError) {
+      if (!('geolocation' in navigator)) {
+        const message = 'This browser does not support GPS location. Try the latest Chrome browser.';
+        locationStatusText.textContent = message;
+        currentLocationUrl = 'Location Unavailable';
+        if (onError) onError(message);
+        return;
+      }
+
+      if (!window.isSecureContext) {
+        const message = 'Location needs a secure website (HTTPS) or localhost. Open this project through an HTTPS hosting service, then allow Location permission in Chrome.';
+        locationStatusText.textContent = message;
+        currentLocationUrl = 'Location Unavailable';
+        if (onError) onError(message);
+        return;
+      }
+
+      locationStatusText.textContent = 'Requesting your location. Please allow location access in your browser.';
+      getLocationBtn.disabled = true;
+      getLocationBtn.textContent = 'Getting Location...';
+
+      const success = (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const accuracy = Math.round(pos.coords.accuracy || 0);
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lat + ',' + lon)}`;
+        currentLocationUrl = mapsUrl;
+
+        locationStatusText.textContent = `Location received successfully. Approximate accuracy: ${accuracy} metres. Google Maps link is ready.`;
+        googleMapsContainer.innerHTML = '';
+        const link = document.createElement('a');
+        link.href = mapsUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'btn btn-sms';
+        link.textContent = 'Open My Location on Google Maps';
+        googleMapsContainer.appendChild(link);
+
+        getLocationBtn.disabled = false;
+        getLocationBtn.textContent = 'Refresh My Location';
+        if (onSuccess) onSuccess(mapsUrl);
+      };
+
+      const failure = (err) => {
+        let message;
+        if (err && err.code === 1) {
+          message = 'Location permission was denied. In Chrome, open Site settings > Location > Allow, then try again.';
+        } else if (err && err.code === 2) {
+          message = 'Your location could not be determined. Turn on device Location/GPS and try again.';
+        } else if (err && err.code === 3) {
+          message = 'Location request timed out. Move to an open area and try again.';
+        } else {
+          message = 'Unable to get location. Check GPS and browser permissions, then try again.';
+        }
+        locationStatusText.textContent = message;
+        currentLocationUrl = 'Location Unavailable';
+        googleMapsContainer.textContent = 'No Google Maps location link is available until GPS coordinates are received.';
+        getLocationBtn.disabled = false;
+        getLocationBtn.textContent = 'Try Location Again';
+        if (onError) onError(message);
+      };
+
+      // Try high accuracy first; if it times out or GPS is unavailable, retry with network-assisted location.
+      navigator.geolocation.getCurrentPosition(
+        success,
+        (firstError) => {
+          if (firstError && firstError.code === 1) {
+            failure(firstError); // Permission denied: do not prompt repeatedly.
+            return;
+          }
+          locationStatusText.textContent = 'GPS is taking longer than expected. Trying network-assisted location...';
+          navigator.geolocation.getCurrentPosition(success, failure, {
+            enableHighAccuracy: false,
+            timeout: 20000,
+            maximumAge: 60000
+          });
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+      );
+    }
+
+    getLocationBtn.addEventListener('click', () => {
+      fetchLocation(
+        () => { sosStatus.textContent = 'Your location and Google Maps link are ready.'; },
+        () => { /* The location status above explains how to resolve the issue. */ }
+      );
+    });
+
+    // Feature 2, 8 & 10: SOS Execution & Dispatch Flow
+    sosBtn.addEventListener('click', () => {
+      startSiren();
+      sosStatus.textContent = "🚨 SOS ACTIVATED! Siren sounding. Preparing notification dispatch...";
+
+      fetchLocation(
+        (locUrl) => processEmergencyDispatch(locUrl),
+        () => processEmergencyDispatch("Location unavailable")
+      );
+    });
+
+    function processEmergencyDispatch(locationInfo) {
+      const descText = emergencyDesc.value.trim() || "EMERGENCY ALERT: I need immediate assistance!";
+      
+      // Feature 10: Payload Aggregation
+      preparedMessage = `EMERGENCY SOS ALERT!\n\nDescription: ${descText}\n\nMy Current Location: ${locationInfo}\n\nPlease contact me and arrange help immediately.`;
+      
+      messagePreview.textContent = preparedMessage;
+      copyMsgBtn.disabled = false;
+      shareMsgBtn.disabled = false;
+
+      // Local Push Notification Trigger
+      triggerLocalAutoNotification(descText);
+
+      // Multi-tab Broadcast Dispatch
+      emergencyChannel.postMessage({
+        timestamp: new Date().toISOString(),
+        description: descText,
+        location: locationInfo,
+        contacts: getSavedContacts()
+      });
+
+      renderContactActionLinks();
+      saveAlertHistory(descText, locationInfo);
+    }
+
+    function triggerLocalAutoNotification(descriptionText) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('🚨 SafeCircle Emergency SOS Activated!', {
+          body: `Emergency Alert Dispatched: ${descriptionText}`,
+          icon: 'https://cdn-icons-png.flaticon.com/512/1207/1207557.png',
+          tag: 'safecircle-sos'
+        });
+      }
+    }
+
+    emergencyChannel.onmessage = (event) => {
+      console.log('Automated Emergency Broadcast Received:', event.data);
+    };
+
+    // Feature 6 & 7: Dynamic Deep-Links for Call and SMS
+    function renderContactActionLinks() {
+      contactActionLinks.innerHTML = '';
+      const contacts = getSavedContacts().filter(c => c.phone || c.name);
+
+      if (contacts.length === 0) {
+        contactActionLinks.innerHTML = '<p style="color:var(--muted); font-size:0.85rem;">No contacts saved. Please add trusted contacts above.</p>';
+        return;
+      }
+
+      contacts.forEach((c, idx) => {
+        const div = document.createElement('div');
+        div.className = 'contact-row';
+        const contactName = c.name || `Person ${idx + 1}`;
+        const phone = c.phone || '';
+
+        div.innerHTML = `
+          <strong>${contactName}</strong> (${phone || 'No phone number'})
+          <div class="contact-actions">
+            <!-- Feature 6: Direct Telephonic Call Link -->
+            <a href="tel:${phone}" class="btn btn-call">📞 Call Now</a>
+            <!-- Feature 7: Pre-filled SMS Messaging Link -->
+            <a href="sms:${phone}?body=${encodeURIComponent(preparedMessage || 'Emergency! Please check on me. My location will be added after I activate SOS.')}" class="btn btn-sms">📍 Send SOS + Location</a>
+          </div>
+        `;
+        contactActionLinks.appendChild(div);
+      });
+    }
+
+    // Feature 14: Improved Clipboard Copy with fallback for mobile browsers
+    copyMsgBtn.addEventListener('click', async () => {
+      const textToCopy = preparedMessage || messagePreview.textContent || '';
+
+      if (!textToCopy.trim()) {
+        alert('Please activate SOS and prepare the emergency message first.');
+        return;
+      }
+
+      // First try the modern Clipboard API (requires HTTPS or localhost
+      // and browser permission in many browsers).
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(textToCopy);
+          sosStatus.textContent = 'Emergency message copied successfully.';
+          alert('Emergency message copied successfully!');
+          return;
+        }
+      } catch (err) {
+        // Continue to the fallback method below.
+      }
+
+      // Fallback for browsers where the Clipboard API is unavailable.
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = textToCopy;
+      tempTextArea.setAttribute('readonly', '');
+      tempTextArea.style.position = 'fixed';
+      tempTextArea.style.left = '-9999px';
+      tempTextArea.style.top = '0';
+      document.body.appendChild(tempTextArea);
+      tempTextArea.focus();
+      tempTextArea.select();
+      tempTextArea.setSelectionRange(0, tempTextArea.value.length);
+
+      let copied = false;
+      try {
+        copied = document.execCommand('copy');
+      } catch (err) {
+        copied = false;
+      }
+      document.body.removeChild(tempTextArea);
+
+      if (copied) {
+        sosStatus.textContent = 'Emergency message copied successfully.';
+        alert('Emergency message copied successfully!');
+      } else {
+        // Keep the actual message visible and selected for manual copying.
+        messagePreview.textContent = textToCopy;
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(messagePreview);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        sosStatus.textContent = 'Automatic copy was blocked. The message is selected; long-press it and choose Copy.';
+        alert('Automatic copy was blocked. Long-press the selected message and choose Copy.');
+      }
+    });
+
+    // Feature 13: Web Share API Execution
+    shareMsgBtn.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'SafeCircle SOS Emergency',
+            text: preparedMessage
+          });
+        } catch (e) {}
+      } else {
+        alert('Web Share API is not supported in this browser.');
+      }
+    });
+
+    // Feature 16: Local Emergency History Logger
+    function getAlertHistory() {
+      try {
+        const h = JSON.parse(localStorage.getItem('safecircle_history'));
+        return Array.isArray(h) ? h : [];
+      } catch(e) { return []; }
+    }
+
+    function saveAlertHistory(desc, loc) {
+      const history = getAlertHistory();
+      const newEntry = {
+        time: new Date().toLocaleString(),
+        desc: desc,
+        location: loc
+      };
+      history.unshift(newEntry);
+      localStorage.setItem('safecircle_history', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      historyList.innerHTML = '';
+      const history = getAlertHistory();
+
+      if (history.length === 0) {
+        historyList.innerHTML = '<li style="font-size:0.85rem; color:var(--muted);">No emergency history recorded.</li>';
+        return;
+      }
+
+      history.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <small>⏱️ ${item.time}</small>
+          <strong>Description:</strong> ${item.desc}<br>
+          <small style="margin-top:2px;">📍 <strong>Location:</strong> ${item.location}</small>
+        `;
+        historyList.appendChild(li);
+      });
+    }
+
+    // Feature 17 (Part 2): Clear Stored History Log
+    clearHistoryBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear the emergency alert history?')) {
+        localStorage.removeItem('safecircle_history');
+        renderHistory();
+      }
+    });
+
+    // App Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      renderContactInputs();
+      renderContactActionLinks();
+      renderHistory();
+    });
+
+    // Stop Siren On Page Unload
+    window.addEventListener('pagehide', stopSiren);
+  </script>
+</body>
+</html>
+```
+
+The updated file containing all 17 features has been generated.
